@@ -23,6 +23,7 @@
 				transform : scaleX(-1);
 				-ms-filter : fliph; /*IE*/
 				filter : fliph; /*IE*/
+			
 			}
 
 			#videoel {
@@ -75,6 +76,7 @@
 				window.location.protocol = "https";
 			}
 		</script>
+		
 		<script type="text/javascript">
 
 			var _gaq = _gaq || [];
@@ -90,6 +92,7 @@
 		</script>
 	</head>
 	<body>
+		<script src="js/pixi.js"></script>
 		<script src="./js/libs/utils.js"></script>
 		<script src="../build/clmtrackr.js"></script>
 		<script src="./js/libs/Stats.js"></script>
@@ -223,16 +226,73 @@
 					trackingStarted = true;
 					// start loop to draw face
 					drawLoop();
-				}
-
+				}  
+			
+				var uplips =[];
+				var lowerlips = [];
+				
 				function drawLoop() {
 					requestAnimFrame(drawLoop);
 					overlayCC.clearRect(0, 0, vid_width, vid_height);
-					//psrElement.innerHTML = "score :" + ctrack.getScore().toFixed(4);
-					if (ctrack.getCurrentPosition()) {
-						ctrack.draw(overlay);
+					//psrElement.innerHTML = "score :" + ctrack.getScore().toFixed(4);	
+					if(ctrack.getCurrentPosition()){
+						//ctrack.draw(overlay);
+						 uplips = [ctrack.getCurrentPosition()[44], ctrack.getCurrentPosition()[45],
+							ctrack.getCurrentPosition()[46],ctrack.getCurrentPosition()[47],
+							ctrack.getCurrentPosition()[48],ctrack.getCurrentPosition()[49],ctrack.getCurrentPosition()[50],
+							ctrack.getCurrentPosition()[59],ctrack.getCurrentPosition()[60],ctrack.getCurrentPosition()[61]]
+						
+						 lowerlips = [ctrack.getCurrentPosition()[44],ctrack.getCurrentPosition()[50],
+							ctrack.getCurrentPosition()[51],ctrack.getCurrentPosition()[52],ctrack.getCurrentPosition()[53],
+							ctrack.getCurrentPosition()[54],ctrack.getCurrentPosition()[55],ctrack.getCurrentPosition()[50],
+							ctrack.getCurrentPosition()[56],ctrack.getCurrentPosition()[57],ctrack.getCurrentPosition()[58]]
+						
 					}
+				
+			
 				}
+				
+				const app = new PIXI.Application({ antialias: true});
+				document.body.appendChild(app.view);
+				const sprite = PIXI.Sprite.from(vid);
+
+				// Lines drawing
+				const Line = new PIXI.Graphics();
+
+				Line.lineStyle(2, 0xFFFFFF, 1);
+				Line.moveTo(300, 300);
+				Line.lineTo(330, 340);
+				Line.lineTo(340, 340);
+				Line.lineTo(380, 300);
+				
+
+				Line.position.x = 100;
+				Line.position.y = 100;
+
+				app.stage.addChild(Line);
+
+			
+				// // Lips with Arc////
+				const Liparc = new PIXI.Graphics();
+
+				Liparc.lineStyle(6, 0x3333DD, 1);
+				Liparc.beginFill(0x3333DD); 
+
+				Liparc.arc(175, 300, 50,2* Math.PI, 3 * Math.PI);
+				Liparc.arc(250, 300, 50,2* Math.PI, 3 * Math.PI );
+				Liparc.arc(175, 300, 50,3* Math.PI, 2*Math.PI);
+				Liparc.arc(250, 300, 50,3* Math.PI, 2* Math.PI);
+				app.stage.addChild(Liparc);
+
+				//texture from video
+				const arc3 = new PIXI.Graphics();
+				
+				arc3.lineTextureStyle(50,sprite.texture);
+				//arc3.beginFill(sprite.texture); 
+			
+				arc3.arc(650, 420, 60, 40, 3 * Math.PI );
+
+				app.stage.addChild(arc3);
 
 				/*********** Code for stats **********/
 
